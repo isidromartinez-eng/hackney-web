@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackney - London</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="modal-filtros-overlay" id="modalConfirmacion" style="z-index: 2005;">
+        <div class="modal-filtros-caja" style="text-align: center; padding: 30px;">
+            <p id="texto-modal-eliminar" style="font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 20px;">¿Quiere eliminar este producto del carrito?</p>
+            <div class="modal-filtros-botones">
+                <button class="btn-modal-filtro btn-aplicar-filtro" onclick="confirmarEliminar(true)">Sí</button>
+                <button class="btn-modal-filtro btn-cancelar-filtro" onclick="confirmarEliminar(false)">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-filtros-overlay" id="modalSinStock" style="z-index: 2010;">
+        <div class="modal-filtros-caja modal-sin-stock">
+            <i class="fas fa-box-open"></i>
+            <h3 style="border: none; margin-bottom: 10px;">Próximamente</h3>
+            <p style="font-family: 'Lato', sans-serif; color: #555; margin-bottom: 25px; line-height: 1.5;">Actualmente no contamos con stock para esta categoría. ¡Mantente atento a nuestros nuevos ingresos!</p>
+            <button class="btn-modal-filtro btn-cancelar-filtro" onclick="cerrarModalSinStock()">Aceptar</button>
+        </div>
+    </div>
+
+    <div class="modal-filtros-overlay" id="modalFiltros">
+        <div class="modal-filtros-caja">
+            <h3>Filtrar Catálogo</h3>
+            
+            <div class="grupo-filtro">
+                <h4>Tipo de Abrigo</h4>
+                <div class="opciones-filtro-grilla" id="filtros-modelo">
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'modelo')" data-valor="camperas">Camperas</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'modelo')" data-valor="sacos">Sacos</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'modelo')" data-valor="sweaters">Sweaters</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'modelo')" data-valor="montgomery">Pilotos y Montgomery</button>
+                </div>
+            </div>
+
+            <div class="grupo-filtro">
+                <h4>Talle</h4>
+                <div class="opciones-filtro-grilla" id="filtros-talles">
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'talle')">S</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'talle')">M</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'talle')">L</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'talle')">XL</button>
+                    <button class="opcion-filtro-talle" onclick="toggleFiltro(this, 'talle')">XXL</button>
+                </div>
+            </div>
+
+            <div class="modal-filtros-botones">
+                <button class="btn-modal-filtro btn-cancelar-filtro" onclick="cerrarFiltros()">Cancelar</button>
+                <button id="btnAplicarFiltros" class="btn-modal-filtro btn-aplicar-filtro" onclick="aplicarFiltros()" disabled>Buscar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="top-controles">
+        <button id="btnHamburguesaGlobal" class="btn-hamburguesa-global"><i class="fas fa-bars"></i></button>
+        <div class="buscador-contenedor" id="buscadorFlotante" style="transition: opacity 0.3s;">
+            <div class="buscador-global">
+                <input type="text" id="inputBuscador" placeholder="Buscar producto..." onkeyup="manejarSugerencias(event, 'inputBuscador', 'sugerenciasCaja')" autocomplete="off">
+                <button onclick="ejecutarBusqueda('inputBuscador')"><i class="fas fa-search"></i></button>
+            </div>
+            <div id="sugerenciasCaja" class="sugerencias-caja"></div>
+        </div>
+    </div>
+
+    <header id="headerTop" class="header-fijo">
+        <div class="spacer-header"></div>
+        <div class="logo-contenedor" onclick="cambiarVista('vista-principal')">
+            <img src="img/logos/logo.jpg.webp" alt="Hackney" class="logo-header-img">
+        </div>
+        <div class="spacer-header"></div> 
+    </header>
+
+    <nav id="menuLateral" class="menu-lateral">
+        <div class="header-menu">
+            <div class="titulo-menu-container">
+                <div class="titulo-menu-izquierda">
+                    <i class="fas fa-bars icono-menu-lateral"></i>
+                    <h3 class="titulo-menu">Catálogo</h3>
+                </div>
+                <button id="btnCerrar" class="btn-cerrar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="buscador-contenedor">
+                <div class="buscador-global" style="width: 100%; border-color: var(--color-principal);">
+                    <input type="text" id="inputBuscadorMenu" placeholder="Buscar producto..." onkeyup="manejarSugerencias(event, 'inputBuscadorMenu', 'sugerenciasCajaMenu')" autocomplete="off" style="width: 100%;">
+                    <button onclick="ejecutarBusqueda('inputBuscadorMenu')"><i class="fas fa-search"></i></button>
+                </div>
+                <div id="sugerenciasCajaMenu" class="sugerencias-caja" style="position: relative; z-index: 10;"></div>
+            </div>
+        </div>
+
+        <ul class="lista-menu">
+            <li class="item-menu"><a onclick="cambiarVista('vista-principal')" class="enlace-menu">Inicio</a></li>
+            <li class="item-menu"><a onclick="cambiarVista('vista-ver-todo')" class="enlace-menu" style="color: var(--color-principal); font-weight: 700;">Ver Todo</a></li>
+            <li class="item-menu"><a onclick="cambiarVista('vista-abrigos-general')" class="enlace-menu">Abrigos y Sweaters</a></li>
+            <li class="item-menu"><a onclick="mostrarSinStock()" class="enlace-menu" style="color: #999;">Pantalones</a></li>
+            <li class="item-menu"><a onclick="mostrarSinStock()" class="enlace-menu" style="color: #999;">Camisas</a></li>
+            <li class="item-menu"><a onclick="mostrarSinStock()" class="enlace-menu" style="color: #999;">Calzado</a></li>
+            <hr style="border: 0; border-top: 1px solid var(--lineas); margin: 20px 0;">
+            <li class="item-menu"><a onclick="abrirCarrito()" class="enlace-menu" style="color: #e74c3c; font-weight: 700;">Mi Carrito <i class="fas fa-shopping-cart"></i></a></li>
+        </ul>
+    </nav>
+
+    <div id="heroBanner" class="hero-banner gigante" onclick="cambiarVista('vista-principal')">
+        <div class="hero-logo-wrapper" id="logoGiganteFoco">
+            <img src="img/logos/logo.jpg.webp" alt="Hackney London Logo" class="hero-logo-img">
+        </div>
+    </div>
+
+    <main id="vista-principal" class="vista-principal">
+        <div class="contenedor-productos">
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Kensington Quilted Jacket" data-precio="$125.000" data-desc="Confeccionada con resistente poliéster matelaseado, inspirada en las campiñas de caza británicas. Ideal para mantener el calor sin sacrificar una silueta urbana y formal." data-img="img/ropa/campera-negra-1.jpg.webp" data-talles="letras" data-colores="color-negro">
+                <div class="img-container"><img src="img/ropa/campera-negra-1.jpg.webp" alt="Campera Negra" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Kensington Quilted Jacket</h3><p class="precio">$125.000</p></div>
+            </article>
+            
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Highland Tweed Gilet" data-precio="$85.000" data-desc="Chaleco ligero con aislante térmico, rindiendo homenaje a la tradicional superposición de prendas escocesa. Indispensable para las mañanas de otoño." data-img="img/ropa/chaleco-marron-1.jpg.webp" data-talles="letras" data-colores="color-marron">
+                <div class="img-container"><img src="img/ropa/chaleco-marron-1.jpg.webp" alt="Chaleco Marrón" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Highland Tweed Gilet</h3><p class="precio">$85.000</p></div>
+            </article>
+            
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Royal Navy Duffle Coat" data-precio="$190.000" data-desc="Un clásico derivado de los abrigos navales ingleses de la Primera Guerra. Cuenta con los inconfundibles alamares y botones de asta para máxima elegancia." data-img="img/ropa/montgomery-parado-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-marron">
+                <div class="img-container"><img src="img/ropa/montgomery-parado-1.jpg.webp" alt="Montgomery" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Royal Navy Duffle Coat</h3><p class="precio">$190.000</p></div>
+            </article>
+            
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Chelsea Trench Coat" data-precio="$160.000" data-desc="Diseñado originalmente para las trincheras, hoy es el epítome del estilo londinense. Gabardina repelente al agua con un corte impecablemente estructurado." data-img="img/ropa/piloto-claro-1.jpg.webp" data-talles="letras" data-colores="color-beige">
+                <div class="img-container"><img src="img/ropa/piloto-claro-1.jpg.webp" alt="Piloto" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Chelsea Trench Coat</h3><p class="precio">$160.000</p></div>
+            </article>
+
+<article class="producto" onclick="window.location.href='productos/saco-corbata-negra.html'" style="cursor: pointer;">                <div class="img-container"><img src="img/ropa/saco-corbata-negra-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Mayfair Tailored Suit</h3><p class="precio">$150.000</p></div>
+            </article>
+
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Edinburgh Wool Jacket" data-precio="$145.000" data-desc="Tejido fino con una mezcla rica en lanas seleccionadas. Su textura sutil aporta profundidad visual, siendo una pieza fundamental del guardarropa de negocios." data-img="img/ropa/saco-tela-gris-1.jpg.webp" data-talles="letras" data-colores="color-gris">
+                <div class="img-container"><img src="img/ropa/saco-tela-gris-1.jpg.webp" alt="Saco Gris" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Edinburgh Wool Jacket</h3><p class="precio">$145.000</p></div>
+            </article>
+
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Balmoral Argyle Knit" data-precio="$75.000" data-desc="Luciendo el tradicional patrón de rombos del clan Campbell en Argyll, Escocia. Un suéter que mezcla herencia y confort excepcional para el fin de semana." data-img="img/ropa/sweater-escoces-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-marron">
+                <div class="img-container"><img src="img/ropa/sweater-escoces-1.jpg.webp" alt="Sweater" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Balmoral Argyle Knit</h3><p class="precio">$75.000</p></div>
+            </article>
+
+            <article class="producto" onclick="abrirPDP(this)" data-titulo="The Oxford Quarter-Zip" data-precio="$70.000" data-desc="Práctico y distinguido suéter de medio cierre, ideal para el estilo smart-casual de los clubes universitarios ingleses. Presenta una discreta trama texturizada." data-img="img/ropa/medio-cierre-cuadros-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-gris">
+                <div class="img-container"><img src="img/ropa/medio-cierre-cuadros-1.jpg.webp" alt="Sweater Medio Cierre" loading="lazy"></div>
+                <div class="detalles-producto"><h3>The Oxford Quarter-Zip</h3><p class="precio">$70.000</p></div>
+            </article>
+        </div>
+    </main>
+
+    <main id="vista-ver-todo" class="vista-subseccion">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        <div class="encabezado-subseccion">
+            <h2 id="titulo-ver-todo" class="titulo-seccion-especifica">Catálogo Completo</h2>
+        </div>
+        
+        <div class="contenedor-acciones-ver-todo">
+            <button class="btn-filtro" onclick="abrirFiltros()"><i class="fas fa-sliders-h"></i> Filtrar Catálogo</button>
+            <button id="btnLimpiarFiltro" class="btn-filtro" onclick="limpiarFiltros()" style="display: none; background: transparent; border: 1px solid var(--texto-oscuro); color: var(--texto-oscuro);">Limpiar</button>
+        </div>
+
+        <div class="contenedor-carteles" id="carteles-ver-todo">
+            <div class="cartel-categoria" onclick="cambiarVista('vista-camperas')">Camperas</div>
+            <div class="cartel-categoria" onclick="cambiarVista('vista-sacos')">Sacos</div>
+            <div class="cartel-categoria" onclick="cambiarVista('vista-sweaters')">Sweaters</div>
+            <div class="cartel-categoria" onclick="cambiarVista('vista-montgomery')">Montgomery</div>
+        </div>
+        
+        <div id="grilla-ver-todo" class="contenedor-grilla-4"></div>
+    </main>
+
+    <main id="vista-abrigos-general" class="vista-subseccion">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        <div class="encabezado-subseccion"><h2 class="titulo-seccion-especifica">Abrigos y Sweaters</h2></div>
+        <div class="contenedor-carteles">
+            <div class="cartel-categoria" onclick="cambiarVista('vista-camperas')">Camperas</div>
+            <div class="cartel-categoria" onclick="cambiarVista('vista-sacos')">Sacos</div>
+            <div class="cartel-categoria" onclick="cambiarVista('vista-sweaters')">Sweaters</div>
+            <div class="cartel-categoria" onclick="cambiarVista('vista-montgomery')">Pilotos</div>
+        </div>
+        <div id="grilla-abrigos-general" class="contenedor-grilla-sub"></div>
+    </main>
+
+    <main id="vista-camperas" class="vista-subseccion subcategoria-base" data-padre="abrigos">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        <div class="encabezado-subseccion"><h2 class="titulo-seccion-especifica">Camperas y Chalecos</h2></div>
+        <div class="contenedor-grilla-sub">
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Kensington Quilted Jacket" data-precio="$125.000" data-desc="Confeccionada con resistente poliéster matelaseado, inspirada en las campiñas de caza británicas. Ideal para mantener el calor sin sacrificar una silueta urbana y formal." data-img="img/ropa/campera-negra-1.jpg.webp" data-talles="letras" data-colores="color-negro">
+                <div class="tarjeta-img-container"><img src="img/ropa/campera-negra-1.jpg.webp" alt="Campera" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Kensington Quilted Jacket</h3><p class="tarjeta-precio">$125.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Cambridge Navy Jacket" data-precio="$130.000" data-desc="De corte pulcro y minimalista. Una campera de transición perfecta inspirada en las líneas limpias de la estética náutica británica." data-img="img/ropa/campera-polo-azul-1.jpg.webp" data-talles="letras" data-colores="color-azul">
+                <div class="tarjeta-img-container"><img src="img/ropa/campera-polo-azul-1.jpg.webp" alt="Campera" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Cambridge Navy Jacket</h3><p class="tarjeta-precio">$130.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Windsor Puffer Coat" data-precio="$145.000" data-desc="Acolchado premium para los inviernos más exigentes. Resistencia térmica de alta tecnología envuelta en un diseño sobrio y sumamente elegante." data-img="img/ropa/campera-puffer-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-negro">
+                <div class="tarjeta-img-container"><img src="img/ropa/campera-puffer-1.jpg.webp" alt="Campera" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Windsor Puffer Coat</h3><p class="tarjeta-precio">$145.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Thames Navy Gilet" data-precio="$80.000" data-desc="Un chaleco extremadamente ligero y versátil. Su color azul profundo permite combinaciones formales sobre camisas de vestir o cuellos de tortuga." data-img="img/ropa/chaleco-azul-1.jpg.webp" data-talles="letras" data-colores="color-azul">
+                <div class="tarjeta-img-container"><img src="img/ropa/chaleco-azul-1.jpg.webp" alt="Chaleco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Thames Navy Gilet</h3><p class="tarjeta-precio">$80.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Peaky Blinder Gilet" data-precio="$85.000" data-desc="Edición especial con un guiño a la indumentaria de principios de siglo XX en Birmingham. Un toque de audacia para el caballero moderno." data-img="img/ropa/chaleco-azul-boina-1.jpg.webp" data-talles="letras" data-colores="color-azul">
+                <div class="tarjeta-img-container"><img src="img/ropa/chaleco-azul-boina-1.jpg.webp" alt="Chaleco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Peaky Blinder Gilet</h3><p class="tarjeta-precio">$85.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Highland Tweed Gilet" data-precio="$80.000" data-desc="Chaleco ligero con aislante térmico, rindiendo homenaje a la tradicional superposición de prendas escocesa. Indispensable para las mañanas de otoño." data-img="img/ropa/chaleco-marron-1.jpg.webp" data-talles="letras" data-colores="color-marron">
+                <div class="tarjeta-img-container"><img src="img/ropa/chaleco-marron-1.jpg.webp" alt="Chaleco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Highland Tweed Gilet</h3><p class="tarjeta-precio">$80.000</p></div>
+            </article>
+        </div>
+    </main>
+
+    <main id="vista-sacos" class="vista-subseccion subcategoria-base" data-padre="abrigos">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        <div class="encabezado-subseccion"><h2 class="titulo-seccion-especifica">Sacos</h2></div>
+        <div class="contenedor-grilla-sub">
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Mayfair Tailored Suit" data-precio="$150.000" data-desc="La cúspide de la sastrería. Este saco de líneas depuradas y solapa tradicional es tu mejor aliado para eventos que exijan máxima etiqueta y prestigio." data-img="img/ropa/saco-corbata-negra-1.jpg.webp" data-talles="letras" data-colores="color-negro,color-gris">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-corbata-negra-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Mayfair Tailored Suit</h3><p class="tarjeta-precio">$150.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Piccadilly Blush Suit" data-precio="$155.000" data-desc="Confección sastrera excepcional con detalles cromáticos distinguidos. Ideal para ceremonias matutinas o cócteles de media tarde." data-img="img/ropa/saco-corbata-rosa-1.jpg.webp" data-talles="letras" data-colores="color-gris,color-bordo">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-corbata-rosa-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Piccadilly Blush Suit</h3><p class="tarjeta-precio">$155.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Sterling Silver Blazer" data-precio="$160.000" data-desc="Un sutil acabado gris plata que captura la luz de forma elegante. Cortado a medida para enmarcar los hombros con autoridad." data-img="img/ropa/saco-gris-plata-1.jpg.webp" data-talles="letras" data-colores="color-gris">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-gris-plata-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Sterling Silver Blazer</h3><p class="tarjeta-precio">$160.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Regent Evening Jacket" data-precio="$165.000" data-desc="Confeccionado para galas inolvidables. Sus finas terminaciones enaltecen cualquier conjunto de moño para celebraciones de alto vuelo." data-img="img/ropa/saco-moño-celeste-1.jpg.webp" data-talles="letras" data-colores="color-azul">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-moño-celeste-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Regent Evening Jacket</h3><p class="tarjeta-precio">$165.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Bond Street Tuxedo" data-precio="$165.000" data-desc="El clásico corte tuxedo inglés. Solapas impactantes y una caída soberbia, rindiendo tributo a los espías más famosos de su Majestad." data-img="img/ropa/saco-moño-gris-1.jpg.webp" data-talles="letras" data-colores="color-gris,color-negro">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-moño-gris-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Bond Street Tuxedo</h3><p class="tarjeta-precio">$165.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Oxford Premium Blazer" data-precio="$140.000" data-desc="Tejido de alta gama que respira sofisticación. Su tonalidad sólida y estructura firme lo convierten en un esencial del armario ejecutivo." data-img="img/ropa/saco-tela-1.jpg.webp" data-talles="letras" data-colores="color-azul">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-tela-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Oxford Premium Blazer</h3><p class="tarjeta-precio">$140.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Edinburgh Wool Jacket" data-precio="$145.000" data-desc="Tejido fino con una mezcla rica en lanas seleccionadas. Su textura sutil aporta profundidad visual, siendo una pieza fundamental del guardarropa de negocios." data-img="img/ropa/saco-tela-gris-1.jpg.webp" data-talles="letras" data-colores="color-gris">
+                <div class="tarjeta-img-container"><img src="img/ropa/saco-tela-gris-1.jpg.webp" alt="Saco" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Edinburgh Wool Jacket</h3><p class="tarjeta-precio">$145.000</p></div>
+            </article>
+        </div>
+    </main>
+
+    <main id="vista-sweaters" class="vista-subseccion subcategoria-base" data-padre="abrigos">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        <div class="encabezado-subseccion"><h2 class="titulo-seccion-especifica">Sweaters</h2></div>
+        <div class="contenedor-grilla-sub">
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Oxford Quarter-Zip" data-precio="$75.000" data-desc="Práctico y distinguido suéter de medio cierre, ideal para el estilo smart-casual de los clubes universitarios ingleses. Presenta una discreta trama texturizada." data-img="img/ropa/medio-cierre-cuadros-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-gris">
+                <div class="tarjeta-img-container"><img src="img/ropa/medio-cierre-cuadros-1.jpg.webp" alt="Sweater" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Oxford Quarter-Zip</h3><p class="tarjeta-precio">$75.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Stratford Striped Knit" data-precio="$75.000" data-desc="Tejido clásico con motivos rayados navales. Confortable y abrigado, rinde tributo a las prendas costeras del Reino Unido." data-img="img/ropa/medio-cierre-raya-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-blanco">
+                <div class="tarjeta-img-container"><img src="img/ropa/medio-cierre-raya-1.jpg.webp" alt="Sweater" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Stratford Striped Knit</h3><p class="tarjeta-precio">$75.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Balmoral Argyle Knit" data-precio="$70.000" data-desc="Luciendo el tradicional patrón de rombos del clan Campbell en Argyll, Escocia. Un suéter que mezcla herencia y confort excepcional para el fin de semana." data-img="img/ropa/sweater-escoces-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-marron">
+                <div class="tarjeta-img-container"><img src="img/ropa/sweater-escoces-1.jpg.webp" alt="Sweater" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Balmoral Argyle Knit</h3><p class="tarjeta-precio">$70.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Glasgow Earth Jumper" data-precio="$65.000" data-desc="Básico inmaculado de cuello redondo en tonos tierra. Su hilado de alta densidad garantiza protección contra las bajas temperaturas con sumo estilo." data-img="img/ropa/sweater-marron-1.jpg.webp" data-talles="letras" data-colores="color-marron">
+                <div class="tarjeta-img-container"><img src="img/ropa/sweater-marron-1.jpg.webp" alt="Sweater" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Glasgow Earth Jumper</h3><p class="tarjeta-precio">$65.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Highlands Crimson Knit" data-precio="$65.000" data-desc="Un rojo intenso que destaca en cualquier conjunto invernal. Punto ajustado para una silueta que se mantiene firme y elegante todo el día." data-img="img/ropa/sweater-rojo-parado-1.jpg.webp" data-talles="letras" data-colores="color-bordo">
+                <div class="tarjeta-img-container"><img src="img/ropa/sweater-rojo-parado-1.jpg.webp" alt="Sweater" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Highlands Crimson Knit</h3><p class="tarjeta-precio">$65.000</p></div>
+            </article>
+        </div>
+    </main>
+
+    <main id="vista-montgomery" class="vista-subseccion subcategoria-base" data-padre="abrigos">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        <div class="encabezado-subseccion"><h2 class="titulo-seccion-especifica">Pilotos y Montgomery</h2></div>
+        <div class="contenedor-grilla-sub">
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Royal Navy Duffle Coat" data-precio="$190.000" data-desc="Un clásico derivado de los abrigos navales ingleses de la Primera Guerra. Cuenta con los inconfundibles alamares y botones de asta para máxima elegancia." data-img="img/ropa/montgomery-parado-1.jpg.webp" data-talles="letras" data-colores="color-azul,color-negro">
+                <div class="tarjeta-img-container"><img src="img/ropa/montgomery-parado-1.jpg.webp" alt="Montgomery" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Royal Navy Duffle Coat</h3><p class="tarjeta-precio">$190.000</p></div>
+            </article>
+            <article class="tarjeta-producto" onclick="abrirPDP(this)" data-titulo="The Chelsea Trench Coat" data-precio="$160.000" data-desc="Diseñado originalmente para las trincheras, hoy es el epítome del estilo londinense. Gabardina repelente al agua con un corte impecablemente estructurado." data-img="img/ropa/piloto-claro-1.jpg.webp" data-talles="letras" data-colores="color-beige">
+                <div class="tarjeta-img-container"><img src="img/ropa/piloto-claro-1.jpg.webp" alt="Piloto" loading="lazy"></div>
+                <div class="tarjeta-detalles"><h3>The Chelsea Trench Coat</h3><p class="tarjeta-precio">$160.000</p></div>
+            </article>
+        </div>
+    </main>
+
+    <main id="vista-producto" class="vista-detalle">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button></div>
+        
+        <div class="contenedor-pdp">
+            <div class="pdp-columna-imagenes">
+                <div class="img-pdp-container">
+                    <button class="arrow-btn left" onclick="cambiarPDPArrow(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <img id="pdp-img" src="" alt="Producto Hackney">
+                    <button class="arrow-btn right" onclick="cambiarPDPArrow(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div id="pdp-miniaturas" class="pdp-miniaturas-container"></div>
+            </div>
+            
+            <div class="pdp-info">
+                <h2 id="pdp-titulo">Nombre del Producto</h2>
+                <p id="pdp-desc" class="pdp-desc">Descripción detallada del producto...</p>
+                <p id="pdp-precio" class="pdp-precio">$00.000</p>
+
+                <div class="opciones-pdp">
+                    <h4>Color Disponible</h4>
+                    <div id="pdp-colores" class="pdp-grilla-colores"></div>
+                </div>
+
+                <div class="opciones-pdp">
+                    <h4>Seleccionar Talle</h4>
+                    <div id="pdp-talles" class="pdp-grilla-talles"></div>
+                </div>
+
+                <div class="pdp-acciones">
+                    <div class="pdp-cantidad">
+                        <button class="btn-cant-pdp" onclick="cambiarCantPDP(-1)">-</button>
+                        <span id="pdp-cant" class="num-cant-pdp">1</span>
+                        <button class="btn-cant-pdp" onclick="cambiarCantPDP(1)">+</button>
+                    </div>
+                    <button id="btn-agregar-final" class="btn-agregar-pdp" onclick="agregarAlCarritoPDP()">Agregar al Carrito</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="vista-carrito" class="vista-detalle">
+        <div class="barra-navegacion-secundaria"><button onclick="irAtras()" class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Seguir Comprando</button></div>
+        <h2 class="titulo-seccion-especifica" style="text-align: center; margin: 2rem 0; font-size: 3rem;">Tu Carrito de Compras</h2>
+        <div id="contenedor-items-carrito" class="contenedor-carrito-items">
+            </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Hackney</h3>
+                <p>Elegancia y tradición en indumentaria masculina. Calidad sartorial para el hombre moderno que valora el buen vestir.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Tu Dirección, Ciudad</p>
+                <p><i class="fas fa-phone"></i> +54 9 11 0000-0000</p>
+                <p><i class="fas fa-envelope"></i> info@hackney.com</p>
+            </div>
+            <div class="footer-col">
+                <h3>Redes Sociales</h3>
+                <p>Seguinos para enterarte de las nuevas temporadas.</p>
+                <div class="redes-sociales">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Horarios</h3>
+                <p><i class="far fa-clock"></i> Lunes a Viernes:<br>10:00 - 20:00 hs</p>
+                <p><i class="far fa-clock"></i> Sábados:<br>10:00 - 14:00 hs</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Hackney. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/5491112345678" class="whatsapp-flotante" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <div id="btnCarritoFlotante" class="carrito-flotante" onclick="abrirCarrito()" style="display: none;">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="badge-carrito">0</span>
+    </div>
+
+    <script>
+        const menuLateral = document.getElementById('menuLateral');
+        const overlay = document.getElementById('overlay');
+        let vistaActualGlobal = 'vista-principal'; 
+        
+        let carrito = [];
+        let productoActualPdp = {}; 
+        let cantPDP = 1;
+        
+        let historialNavegacion = []; 
+        let itemEliminarPendienteId = null;
+        let todosLosProductosDOM = []; 
+
+        const nombresColores = {
+            'color-beige': 'Beige', 'color-blanco': 'Blanco', 'color-azul': 'Azul', 'color-negro': 'Negro',
+            'color-marron': 'Marrón', 'color-oliva': 'Oliva', 'color-bordo': 'Bordó', 'color-gris': 'Gris', 'color-suela': 'Suela'
+        };
+
+        const terminosBusqueda = [
+            { term: 'abrigos', display: 'Abrigos', view: 'vista-abrigos-general' },
+            { term: 'camperas', display: 'Camperas', view: 'vista-camperas' },
+            { term: 'sacos', display: 'Sacos', view: 'vista-sacos' },
+            { term: 'montgomery', display: 'Montgomery', view: 'vista-montgomery' },
+            { term: 'piloto', display: 'Pilotos', view: 'vista-montgomery' },
+            { term: 'sweater', display: 'Sweaters', view: 'vista-sweaters' },
+            { term: 'chaleco', display: 'Chalecos', view: 'vista-camperas' }
+        ];
+
+        function levenshteinDistance(a, b) {
+            if(a.length == 0) return b.length; 
+            if(b.length == 0) return a.length; 
+            var matrix = [];
+            for(var i = 0; i <= b.length; i++) matrix[i] = [i];
+            for(var j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for(var i = 1; i <= b.length; i++){
+                for(var j = 1; j <= a.length; j++){
+                    if(b.charAt(i-1) == a.charAt(j-1)) matrix[i][j] = matrix[i-1][j-1];
+                    else matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        function manejarSugerencias(e, inputId, cajaId) {
+            if(e.key === 'Enter') { ejecutarBusqueda(inputId); return; }
+            const input = document.getElementById(inputId).value.toLowerCase().trim();
+            const caja = document.getElementById(cajaId);
+            caja.innerHTML = '';
+            
+            if(input.length < 1) { caja.classList.remove('visible'); return; }
+
+            const coincidencias = terminosBusqueda.filter(t => t.term.includes(input) || levenshteinDistance(input, t.term) <= 2);
+            
+            if(coincidencias.length > 0) {
+                coincidencias.slice(0,4).forEach(match => {
+                    const div = document.createElement('div');
+                    div.className = 'sugerencia-item';
+                    div.textContent = match.display;
+                    div.onclick = () => {
+                        document.getElementById(inputId).value = '';
+                        caja.classList.remove('visible');
+                        cambiarVista(match.view);
+                        if(menuLateral.classList.contains('abierto')) toggleMenu();
+                    };
+                    caja.appendChild(div);
+                });
+                caja.classList.add('visible');
+            } else {
+                caja.classList.remove('visible');
+            }
+        }
+
+        function ejecutarBusqueda(inputId) {
+            const input = document.getElementById(inputId).value.toLowerCase().trim();
+            document.getElementById('sugerenciasCaja').classList.remove('visible');
+            if(document.getElementById('sugerenciasCajaMenu')) document.getElementById('sugerenciasCajaMenu').classList.remove('visible');
+            if(!input) return;
+
+            if(input.includes('pantalon') || input.includes('camisa') || input.includes('zapato') || input.includes('calzado') || input.includes('bota') || input.includes('mocasin')) {
+                mostrarSinStock();
+                document.getElementById(inputId).value = '';
+                if(menuLateral.classList.contains('abierto')) toggleMenu();
+                return;
+            }
+
+            let mejorMatch = null;
+            let mejorDistancia = Infinity;
+
+            terminosBusqueda.forEach(t => {
+                if(t.term.includes(input)) {
+                    mejorMatch = t; mejorDistancia = 0;
+                } else {
+                    const dist = levenshteinDistance(input, t.term);
+                    if(dist < mejorDistancia && dist <= 2) { mejorMatch = t; mejorDistancia = dist; }
+                }
+            });
+
+            if(mejorMatch) {
+                cambiarVista(mejorMatch.view);
+                if(menuLateral.classList.contains('abierto')) toggleMenu();
+            } else {
+                limpiarFiltros(false);
+                const colorDetectado = Object.keys(nombresColores).find(k => nombresColores[k].toLowerCase() === input);
+                if(colorDetectado) {
+                    document.querySelector(`[data-valor="${colorDetectado}"]`).classList.add('activo');
+                    aplicarFiltros();
+                } else {
+                    cambiarVista('vista-ver-todo');
+                }
+                if(menuLateral.classList.contains('abierto')) toggleMenu();
+            }
+            document.getElementById(inputId).value = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const gridVerTodo = document.getElementById('grilla-ver-todo');
+            
+            document.querySelectorAll('main[data-padre]').forEach(subSeccion => {
+                const padreId = subSeccion.getAttribute('data-padre'); 
+                const modeloId = subSeccion.id.replace('vista-', ''); 
+                const gridGeneral = document.getElementById(`grilla-${padreId}-general`);
+                
+                subSeccion.querySelectorAll('.tarjeta-producto').forEach(producto => {
+                    producto.setAttribute('data-prenda', padreId);
+                    producto.setAttribute('data-modelo', modeloId);
+
+                    todosLosProductosDOM.push(producto.cloneNode(true));
+
+                    if (gridGeneral) gridGeneral.appendChild(producto.cloneNode(true));
+                    
+                    if (gridVerTodo) {
+                        let clonVerTodo = producto.cloneNode(true);
+                        clonVerTodo.classList.add('tarjeta-chica');
+                        gridVerTodo.appendChild(clonVerTodo);
+                    }
+                });
+            });
+            
+            inyectarFlechasGrilla();
+            initZoomPDP();
+        });
+
+        function abrirFiltros() { document.getElementById('modalFiltros').classList.add('visible'); }
+        function cerrarFiltros() { document.getElementById('modalFiltros').classList.remove('visible'); }
+        function mostrarSinStock() { document.getElementById('modalSinStock').classList.add('visible'); if(document.body.classList.contains('menu-abierto')) toggleMenu(); }
+        function cerrarModalSinStock() { document.getElementById('modalSinStock').classList.remove('visible'); }
+
+        function toggleFiltro(elemento, tipo) {
+            elemento.classList.toggle('activo');
+            verificarBotonBuscar();
+        }
+
+        function verificarBotonBuscar() {
+            const activos = document.querySelectorAll('#modalFiltros .activo').length;
+            document.getElementById('btnAplicarFiltros').disabled = activos === 0;
+        }
+
+        function aplicarFiltros() {
+            const tallesSeleccionados = Array.from(document.querySelectorAll('#filtros-talles .activo')).map(el => el.textContent);
+            const modelosSeleccionados = Array.from(document.querySelectorAll('#filtros-modelo .activo')).map(el => el.getAttribute('data-valor'));
+
+            const gridVerTodo = document.getElementById('grilla-ver-todo');
+            gridVerTodo.innerHTML = ''; 
+
+            let hayResultados = false;
+
+            todosLosProductosDOM.forEach(prodOriginal => {
+                let pasaTalle = tallesSeleccionados.length === 0;
+                let pasaModelo = modelosSeleccionados.length === 0;
+
+                const tallesData = prodOriginal.getAttribute('data-talles');
+                const modeloData = prodOriginal.getAttribute('data-modelo');
+
+                if (tallesSeleccionados.length > 0) {
+                    if (tallesData === 'letras') pasaTalle = tallesSeleccionados.some(t => ['S','M','L','XL','XXL'].includes(t));
+                }
+
+                if (modelosSeleccionados.length > 0 && modeloData) {
+                    pasaModelo = modelosSeleccionados.includes(modeloData);
+                }
+
+                if (pasaTalle && pasaModelo) {
+                    let clon = prodOriginal.cloneNode(true);
+                    clon.classList.add('tarjeta-chica');
+                    gridVerTodo.appendChild(clon);
+                    hayResultados = true;
+                }
+            });
+
+            if (!hayResultados) {
+                gridVerTodo.innerHTML = '<p style="grid-column: 1/-1; text-align: center; font-size: 1.2rem; color: #666; margin: 3rem 0;">No se encontraron productos con esas características.</p>';
+            }
+
+            document.getElementById('titulo-ver-todo').textContent = 'Resultados Filtrados';
+            document.getElementById('btnLimpiarFiltro').style.display = 'flex';
+            cerrarFiltros();
+            
+            if(vistaActualGlobal !== 'vista-ver-todo') cambiarVista('vista-ver-todo');
+            inyectarFlechasGrilla(); 
+        }
+
+        function limpiarFiltros(recargarVista = true) {
+            document.querySelectorAll('#modalFiltros .activo').forEach(el => el.classList.remove('activo'));
+            verificarBotonBuscar();
+            
+            const gridVerTodo = document.getElementById('grilla-ver-todo');
+            gridVerTodo.innerHTML = '';
+            todosLosProductosDOM.forEach(prod => {
+                let clon = prod.cloneNode(true);
+                clon.classList.add('tarjeta-chica');
+                gridVerTodo.appendChild(clon);
+            });
+
+            document.getElementById('titulo-ver-todo').textContent = 'Catálogo Completo';
+            document.getElementById('btnLimpiarFiltro').style.display = 'none';
+            inyectarFlechasGrilla();
+        }
+
+        // --- NAVEGACIÓN Y MENÚ ---
+        function toggleMenu() { 
+            menuLateral.classList.toggle('abierto'); 
+            overlay.classList.toggle('activo'); 
+            document.body.classList.toggle('menu-abierto');
+        }
+        document.getElementById('btnHamburguesaGlobal').addEventListener('click', toggleMenu);
+        document.getElementById('btnCerrar').addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        document.querySelectorAll('.lista-menu .enlace-menu').forEach(enlace => {
+            enlace.addEventListener('click', () => {
+                if(menuLateral.classList.contains('abierto') && (!enlace.hasAttribute('onclick') || enlace.getAttribute('onclick') !== 'mostrarSinStock()')) {
+                   toggleMenu(); 
+                }
+            });
+        });
+
+        // --- LÓGICA DE SCROLL ACTUALIZADA ---
+        window.addEventListener('scroll', () => {
+            const headerTop = document.getElementById('headerTop');
+            const heroBanner = document.getElementById('heroBanner');
+            const buscadorFlotante = document.getElementById('buscadorFlotante');
+            
+            if (heroBanner.style.display !== 'none') {
+                const rect = heroBanner.getBoundingClientRect();
+                // Aparece el header cuando pasas de la mitad del banner
+                if (rect.bottom < (window.innerHeight * 0.5)) {
+                    headerTop.classList.add('visible');
+                    if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
+                } else {
+                    headerTop.classList.remove('visible');
+                    if(buscadorFlotante) buscadorFlotante.classList.remove('oculto-por-scroll');
+                }
+            } else {
+                headerTop.classList.add('visible');
+                if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
+            }
+        });
+
+        function cambiarVista(idVistaSolicitada, isVolver = false) {
+            if (!isVolver && vistaActualGlobal !== idVistaSolicitada) {
+                historialNavegacion.push({ id: vistaActualGlobal, scroll: window.scrollY || document.documentElement.scrollTop });
+            }
+
+            document.querySelectorAll('main').forEach(vista => vista.style.display = 'none');
+            const vistaActiva = document.getElementById(idVistaSolicitada);
+            if(vistaActiva) vistaActiva.style.display = 'block';
+
+            const headerTop = document.getElementById('headerTop');
+            const heroBanner = document.getElementById('heroBanner');
+            const buscadorFlotante = document.getElementById('buscadorFlotante');
+
+            heroBanner.style.display = 'flex';
+            document.body.style.paddingTop = '0';
+            headerTop.classList.remove('visible'); 
+            if(buscadorFlotante) buscadorFlotante.classList.remove('oculto-por-scroll');
+
+            if (idVistaSolicitada === 'vista-principal') {
+                heroBanner.className = 'hero-banner gigante';
+                document.body.style.backgroundColor = 'var(--blanco)';
+            } else if (idVistaSolicitada === 'vista-carrito') {
+                headerTop.style.display = 'none'; 
+                heroBanner.className = 'hero-banner chico-sin-header';
+                document.body.style.backgroundColor = 'var(--fondo-hueso)';
+                if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
+            } else if (idVistaSolicitada === 'vista-producto') {
+                heroBanner.style.display = 'none'; 
+                document.body.style.paddingTop = '100px'; 
+                headerTop.classList.add('visible'); 
+                document.body.style.backgroundColor = 'var(--blanco)';
+                if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
+            } else {
+                heroBanner.className = 'hero-banner chico';
+                document.body.style.backgroundColor = 'var(--fondo-hueso)';
+                if(idVistaSolicitada === 'vista-ver-todo' && document.querySelectorAll('#modalFiltros .activo').length === 0) {
+                    limpiarFiltros(false);
+                }
+            }
+
+            if(idVistaSolicitada !== 'vista-carrito') headerTop.style.display = 'flex';
+
+            vistaActualGlobal = idVistaSolicitada; 
+
+            if (!isVolver) setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 10);
+        }
+
+        function irAtras() {
+            if (historialNavegacion.length > 0) {
+                const vistaAnterior = historialNavegacion.pop();
+                cambiarVista(vistaAnterior.id, true);
+                setTimeout(() => window.scrollTo({ top: vistaAnterior.scroll, behavior: 'instant' }), 10);
+            } else {
+                cambiarVista('vista-principal');
+            }
+        }
+
+        function inyectarFlechasGrilla() {
+            document.querySelectorAll('.img-container:not(.con-flechas), .tarjeta-img-container:not(.con-flechas)').forEach(container => {
+                container.classList.add('con-flechas');
+                let btnLeft = document.createElement('button');
+                btnLeft.className = 'arrow-btn left';
+                btnLeft.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                btnLeft.onclick = (e) => { e.stopPropagation(); rotarImagenGrilla(container, -1); };
+
+                let btnRight = document.createElement('button');
+                btnRight.className = 'arrow-btn right';
+                btnRight.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                btnRight.onclick = (e) => { e.stopPropagation(); rotarImagenGrilla(container, 1); };
+
+                container.appendChild(btnLeft);
+                container.appendChild(btnRight);
+            });
+        }
+
+        function rotarImagenGrilla(container, direccion) {
+            const img = container.querySelector('img');
+            let index = parseInt(img.dataset.index || 1);
+            
+            img.style.opacity = 0;
+
+            setTimeout(() => {
+                index += direccion;
+                if(index > 5) index = 1;
+                if(index < 1) index = 5;
+
+                const matchExt = img.src.match(/-\d+(\.jpg|\.webp|(\.jpg\.webp))$/);
+                const ext = matchExt ? matchExt[1] : '.jpg';
+                const baseSrc = img.dataset.baseSrc || img.src.replace(/-\d+(\.jpg|\.webp|(\.jpg\.webp))$/, '');
+                if(!img.dataset.baseSrc) img.dataset.baseSrc = baseSrc;
+
+                let testSrc = `${baseSrc}-${index}${ext}`;
+
+                let testImg = new Image();
+                testImg.onload = () => {
+                    img.src = testSrc; img.dataset.index = index; img.style.opacity = 1;
+                };
+                testImg.onerror = () => {
+                    index = 1; 
+                    img.src = `${baseSrc}-1${ext}`; img.dataset.index = 1; img.style.opacity = 1;
+                };
+                testImg.src = testSrc;
+            }, 300); 
+        }
+
+        let miniaturasValidasPDP = [];
+        let indexActualPDP = 1;
+        let isZoomed = false;
+        let zoomScale = 1;
+
+        function abrirPDP(elementoArticulo) {
+            const datos = {
+                titulo: elementoArticulo.getAttribute('data-titulo'),
+                precio: elementoArticulo.getAttribute('data-precio'),
+                desc: elementoArticulo.getAttribute('data-desc'),
+                img: elementoArticulo.getAttribute('data-img'),
+                talles: elementoArticulo.getAttribute('data-talles'),
+                colores: elementoArticulo.getAttribute('data-colores'),
+                claseColorOriginal: elementoArticulo.getAttribute('data-colores') ? elementoArticulo.getAttribute('data-colores').split(',')[0] : ''
+            };
+            cargarDatosPDP(datos);
+        }
+
+        function cargarDatosPDP(datos) {
+            productoActualPdp = datos; 
+
+            document.getElementById('pdp-titulo').textContent = datos.titulo;
+            document.getElementById('pdp-precio').textContent = datos.precio;
+            document.getElementById('pdp-desc').textContent = datos.desc;
+            
+            const pdpImgDOM = document.getElementById('pdp-img');
+            pdpImgDOM.src = datos.img;
+            pdpImgDOM.classList.remove('zoomed');
+            pdpImgDOM.style.transform = 'scale(1)';
+            isZoomed = false;
+
+            const contenedorColores = document.getElementById('pdp-colores');
+            contenedorColores.innerHTML = ''; 
+            if(datos.colores) {
+                const coloresArray = datos.colores.split(',');
+                coloresArray.forEach((claseColor, index) => {
+                    const div = document.createElement('div');
+                    const isSelected = (datos.claseColorOriginal && datos.claseColorOriginal === claseColor) || (!datos.claseColorOriginal && index === 0);
+                    
+                    div.className = `cuadrado-color ${claseColor} ${isSelected ? 'seleccionado' : ''}`;
+                    div.setAttribute('data-color-nombre', nombresColores[claseColor] || 'Clásico');
+                    div.setAttribute('data-color-clase', claseColor);
+                    div.onclick = function() {
+                        contenedorColores.querySelectorAll('.cuadrado-color').forEach(c => c.classList.remove('seleccionado'));
+                        this.classList.add('seleccionado');
+                    };
+                    contenedorColores.appendChild(div);
+                });
+            }
+
+            const contenedorTalles = document.getElementById('pdp-talles');
+            contenedorTalles.innerHTML = '';
+            let arrayTalles = [];
+            if(datos.talles === 'letras') arrayTalles = ['S', 'M', 'L', 'XL', 'XXL'];
+            else if(datos.talles === 'numeros') arrayTalles = ['40', '42', '44', '46', '48'];
+            else if(datos.talles === 'zapatos') arrayTalles = ['39', '40', '41', '42', '43', '44'];
+
+            arrayTalles.forEach(talle => {
+                const btn = document.createElement('button');
+                const isSelected = datos.talle && datos.talle === talle;
+                btn.className = `cuadrado-talle ${isSelected ? 'seleccionado' : ''}`;
+                btn.textContent = talle;
+                btn.onclick = function() {
+                    contenedorTalles.querySelectorAll('.cuadrado-talle').forEach(t => t.classList.remove('seleccionado'));
+                    this.classList.add('seleccionado');
+                };
+                contenedorTalles.appendChild(btn);
+            });
+
+            cantPDP = datos.cantidad || 1;
+            document.getElementById('pdp-cant').textContent = cantPDP;
+
+            const matchExt = datos.img.match(/-\d+(\.jpg|\.webp|(\.jpg\.webp))$/);
+            const ext = matchExt ? matchExt[1] : '.jpg';
+            const baseSrc = datos.img.replace(/-\d+(\.jpg|\.webp|(\.jpg\.webp))$/, '');
+
+            const containerMiniaturas = document.getElementById('pdp-miniaturas');
+            containerMiniaturas.innerHTML = '';
+            miniaturasValidasPDP = [];
+            indexActualPDP = 1;
+
+            for(let i=1; i<=9; i++) {
+                let testSrc = `${baseSrc}-${i}${ext}`;
+                let miniatura = document.createElement('img');
+                miniatura.src = testSrc;
+                miniatura.className = 'miniatura-pdp';
+                if(i === 1) miniatura.classList.add('activa');
+
+                miniatura.onload = () => {
+                    miniaturasValidasPDP.push({index: i, src: testSrc});
+                    miniaturasValidasPDP.sort((a,b) => a.index - b.index);
+                };
+                miniatura.onerror = () => { miniatura.remove(); };
+                miniatura.onclick = () => { cambiarImagenPDP(i, testSrc); };
+                containerMiniaturas.appendChild(miniatura);
+            }
+
+            cambiarVista('vista-producto');
+        }
+
+        function cambiarPDPArrow(direccion) {
+            if(miniaturasValidasPDP.length === 0) return;
+            let idxArray = miniaturasValidasPDP.findIndex(m => m.index === indexActualPDP);
+            if(idxArray === -1) idxArray = 0;
+
+            idxArray += direccion;
+            if(idxArray >= miniaturasValidasPDP.length) idxArray = 0;
+            if(idxArray < 0) idxArray = miniaturasValidasPDP.length - 1;
+
+            let objDestino = miniaturasValidasPDP[idxArray];
+            cambiarImagenPDP(objDestino.index, objDestino.src);
+        }
+
+        function cambiarImagenPDP(num, newSrc) {
+            const img = document.getElementById('pdp-img');
+            indexActualPDP = num;
+
+            document.querySelectorAll('.miniatura-pdp').forEach(m => m.classList.remove('activa'));
+            let mini = document.querySelector(`.miniatura-pdp[src="${newSrc}"]`);
+            if(mini) mini.classList.add('activa');
+
+            img.style.opacity = 0;
+            setTimeout(() => {
+                img.src = newSrc;
+                if(isZoomed) {
+                    img.classList.remove('zoomed');
+                    img.style.transform = 'scale(1)';
+                    isZoomed = false;
+                }
+                img.style.opacity = 1;
+            }, 300);
+        }
+
+        function initZoomPDP() {
+            const img = document.getElementById('pdp-img');
+
+            img.addEventListener('click', function(e) {
+                if(!isZoomed) {
+                    isZoomed = true;
+                    this.classList.add('zoomed');
+                    zoomScale = 2.5; 
+                    this.style.transform = `scale(${zoomScale})`;
+                    actualizarOrigenTransform(e, this);
+                } else {
+                    isZoomed = false;
+                    this.classList.remove('zoomed');
+                    zoomScale = 1;
+                    this.style.transform = `scale(${zoomScale})`;
+                }
+            });
+
+            img.addEventListener('mousemove', function(e) {
+                if(isZoomed) actualizarOrigenTransform(e, this);
+            });
+
+            img.addEventListener('wheel', function(e) {
+                if(isZoomed) {
+                    e.preventDefault(); 
+                    zoomScale += e.deltaY * -0.015;
+                    zoomScale = Math.min(Math.max(1.5, zoomScale), 5); 
+                    this.style.transform = `scale(${zoomScale})`;
+                }
+            }, { passive: false });
+        }
+
+        function actualizarOrigenTransform(e, img) {
+            const rect = img.getBoundingClientRect();
+            const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+            const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+            img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+        }
+
+        function cambiarCantPDP(valor) {
+            if (cantPDP + valor >= 1) {
+                cantPDP += valor;
+                document.getElementById('pdp-cant').textContent = cantPDP;
+            }
+        }
+
+        function agregarAlCarritoPDP() {
+            const colorSeleccionado = document.querySelector('#pdp-colores .seleccionado');
+            const talleSeleccionado = document.querySelector('#pdp-talles .seleccionado');
+            
+            if(!talleSeleccionado) { alert("Por favor, selecciona un talle."); return; }
+            if(!colorSeleccionado) { alert("Por favor, selecciona un color."); return; }
+
+            if(productoActualPdp.id) {
+                carrito = carrito.filter(item => item.id !== productoActualPdp.id);
+            }
+
+            const nuevoItem = {
+                id: Date.now(),
+                titulo: productoActualPdp.titulo,
+                precio: productoActualPdp.precio,
+                desc: productoActualPdp.desc,
+                img: productoActualPdp.img,
+                talles: productoActualPdp.talles,
+                colores: productoActualPdp.colores,
+                colorNombre: colorSeleccionado.getAttribute('data-color-nombre'),
+                claseColorOriginal: colorSeleccionado.getAttribute('data-color-clase'),
+                talle: talleSeleccionado.textContent,
+                cantidad: cantPDP
+            };
+
+            carrito.unshift(nuevoItem);
+            actualizarIconoCarrito();
+            
+            const btn = document.getElementById('btn-agregar-final');
+            const textoPrevio = btn.textContent;
+            btn.textContent = "Añadido a tu colección";
+            btn.style.backgroundColor = "#2C2C2C";
+            setTimeout(() => {
+                btn.textContent = textoPrevio;
+                btn.style.backgroundColor = "";
+            }, 2000);
+        }
+
+        function actualizarIconoCarrito() {
+            const btnCarrito = document.getElementById('btnCarritoFlotante');
+            const badge = document.getElementById('badge-carrito');
+            if (carrito.length > 0) { btnCarrito.style.display = 'flex'; badge.textContent = carrito.length; } 
+            else { btnCarrito.style.display = 'none'; }
+        }
+
+        function abrirCarrito() {
+            renderizarListaCarrito();
+            cambiarVista('vista-carrito');
+        }
+
+        function renderizarListaCarrito() {
+            const contenedor = document.getElementById('contenedor-items-carrito');
+            contenedor.innerHTML = '';
+            if (carrito.length === 0) {
+                contenedor.innerHTML = '<p style="font-family:\'Lato\', sans-serif; color: #666; font-size: 1.1rem; text-align: center;">Tu carrito está vacío.</p>';
+                return;
+            }
+
+            carrito.forEach(item => {
+                const itemHTML = `
+                    <div class="item-carrito">
+                        <img src="${item.img}" alt="${item.titulo}" onclick="editarItemDesdeCarrito(${item.id})">
+                        <div class="col-carrito">
+                            <h3 onclick="editarItemDesdeCarrito(${item.id})">${item.titulo}</h3>
+                            <p class="precio-cart">${item.precio}</p>
+                        </div>
+                        <div class="col-carrito">
+                            <p><strong>Talle:</strong> ${item.talle}</p>
+                            <p><strong>Cant:</strong> ${item.cantidad}</p>
+                        </div>
+                        <div class="col-carrito display-color-cart">
+                            <p><strong>Color:</strong> ${item.colorNombre}</p>
+                            <div class="cuadrito-color ${item.claseColorOriginal}"></div>
+                        </div>
+                        <button class="btn-eliminar-carrito-rect" onclick="prepararEliminarDelCarrito(${item.id}, '${item.titulo}')">Eliminar del carrito</button>
+                    </div>
+                `;
+                contenedor.innerHTML += itemHTML;
+            });
+        }
+
+        function prepararEliminarDelCarrito(id, titulo) {
+            itemEliminarPendienteId = id;
+            document.getElementById('texto-modal-eliminar').textContent = `¿Quiere eliminar "${titulo}" del carrito?`;
+            document.getElementById('modalConfirmacion').classList.add('visible');
+        }
+
+        function confirmarEliminar(confirmado) {
+            if (confirmado && itemEliminarPendienteId !== null) {
+                carrito = carrito.filter(item => item.id !== itemEliminarPendienteId);
+                actualizarIconoCarrito();
+                renderizarListaCarrito();
+            }
+            document.getElementById('modalConfirmacion').classList.remove('visible');
+            itemEliminarPendienteId = null;
+        }
+
+        function editarItemDesdeCarrito(id) {
+            const item = carrito.find(i => i.id === id);
+            if (item) cargarDatosPDP(item);
+        }
+
+    </script>
+</body>
+</html>

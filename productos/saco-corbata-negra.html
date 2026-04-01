@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mayfair Tailored Suit - Hackney</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
+    <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
+   <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
+    <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
+    <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
+    <style>
+        /* --- DISEÑO GENERAL --- */
+        .contenedor-pdp {
+            grid-template-columns: 1.3fr 1fr !important; 
+            max-width: 1400px !important; 
+            gap: 4rem !important; 
+            padding: 0 4rem !important; 
+        }
+
+        .pdp-columna-imagenes {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            max-width: none !important; 
+            width: 100% !important;
+            margin: 0 !important;
+        }
+        
+        .img-lookbook { width: 100%; height: auto; object-fit: cover; border-radius: 0; }
+        .img-lookbook:nth-child(1), .img-lookbook:nth-child(2) {
+            grid-column: span 2; max-height: 85vh; width: 100%; object-position: top; 
+        }
+        
+        .pdp-info { position: sticky; top: 130px; height: fit-content; padding-right: 1rem; }
+
+        /* --- SECCIÓN DE BOTONES (ESTO ES LO QUE BUSCABAS) --- */
+        .pdp-acciones {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 2.5rem;
+        }
+
+        /* --- CONTADOR DE CANTIDAD CON CUERPO --- */
+.pdp-cantidad {
+    display: flex;
+    align-items: center;
+    border: 1px solid #2C2C2C; /* Borde sólido igual a los botones */
+    width: fit-content;
+    height: 45px; /* Le damos una altura fija para que no sea chato */
+    background-color: white;
+    margin-bottom: 10px;
+}
+
+.btn-cant-pdp {
+    background: none;
+    border: none;
+    width: 45px;
+    height: 100%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #2C2C2C;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cant-pdp:hover {
+    background-color: #f5f5f5;
+}
+
+.num-cant-pdp {
+    width: 50px;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    height: 60%; /* El separador no llega hasta arriba/abajo, queda más fino */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- ESTILOS DE SELECCIÓN (Para que se vea qué elegiste) --- */
+.cuadrado-talle.seleccionado {
+    background-color: #2C2C2C !important;
+    color: white !important;
+    border-color: #2C2C2C !important;
+}
+
+.cuadrado-color.seleccionado {
+    outline: 2px solid #2C2C2C;
+    outline-offset: 3px;
+}
+
+        .btn-agregar-pdp, .btn-comprar-ahora {
+            width: 100%;
+            padding: 18px 0;
+            font-family: 'Lato', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+        }
+
+        .btn-agregar-pdp {
+            background-color: #2C2C2C;
+            color: white;
+            border: none;
+        }
+
+        .btn-comprar-ahora {
+            background-color: white;
+            color: #2C2C2C;
+            border: 2px solid #2C2C2C;
+            font-weight: bold;
+        }
+
+       /* PEGÁ ESTO EN SU LUGAR */
+/* EFECTO DE FLOTAR PARA AMBOS BOTONES */
+.btn-agregar-pdp:hover, 
+.btn-comprar-ahora:hover {
+    /* El "salto" hacia arriba */
+    transform: translateY(-3px); 
+    
+    /* La sombra que le da profundidad */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Ajustes específicos de color para que no se mezclen */
+.btn-agregar-pdp:hover {
+    background-color: #000; /* Se pone un negro un pelín más intenso */
+}
+
+.btn-comprar-ahora:hover {
+    background-color: white;
+    border-color: #000;
+}
+
+        /* --- ACORDEONES Y RECOMENDADOS --- */
+        .contenedor-acordeones { margin-top: 2rem; border-top: 1px solid #D1CEC5; }
+        .acordeon-item { border-bottom: 1px solid #D1CEC5; }
+        .acordeon-header { 
+            width: 100%; padding: 1rem 0; display: flex; justify-content: space-between; 
+            background: none; border: none; cursor: pointer; font-size: 0.8rem; letter-spacing: 1px;
+        }
+        .acordeon-contenido { max-height: 0; overflow: hidden; transition: max-height 0.3s; font-size: 0.9rem; color: #666; }
+        /* --- RECOMENDADOS ESTILO EDITORIAL --- */
+.seccion-recomendados {
+    max-width: 1400px;
+    margin: 10rem auto 6rem; /* Más espacio arriba para separar del scroll */
+    padding: 0 4rem;
+    border-top: 1px solid #eee;
+    padding-top: 4rem;
+}
+
+.seccion-recomendados h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 3.5rem;
+    font-weight: 400;
+    font-style: italic; /* Toque distinguido */
+}
+
+.grilla-recomendados {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.tarjeta-recom {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Contenedor de imagen para el efecto zoom */
+.recom-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.tarjeta-recom img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* El botón que aparece al pasar el mouse */
+.btn-quick-add {
+    position: absolute;
+    bottom: -50px; /* Escondido abajo */
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #2C2C2C;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: bottom 0.3s ease;
+    border: none;
+    backdrop-filter: blur(5px);
+}
+
+.tarjeta-recom:hover .btn-quick-add {
+    bottom: 0; /* Aparece al hacer hover */
+}
+
+.tarjeta-recom:hover img {
+    transform: scale(1.05); /* Zoom suave */
+}
+
+.recom-info h4 {
+    font-size: 1rem; /* Un poco más grande */
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase; /* En mayúsculas tiene mucha más autoridad */
+    letter-spacing: 2px; /* Aire entre letras = elegancia */
+    margin: 15px 0 5px;
+    font-weight: 700; /* Más peso visual */
+    color: #1a1a1a;
+}
+
+.recom-info span {
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 400;
+    display: block; /* Para que el precio siempre baje a su propia línea */
+}
+
+.recom-info span {
+    font-size: 0.85rem;
+    color: #888; /* Precio más discreto */
+    font-weight: 300;
+}
+        .grilla-recomendados { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .tarjeta-recom img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+    </style>
+</head>
+<body style="padding-top: 100px;">
+
+    <!-- Header fijo visible -->
+    <header class="header-fijo visible">
+        <div class="spacer-header"></div>
+        <div class="logo-contenedor">
+            <a href="../index.html"><img src="../img/logos/logo.jpg.webp" alt="Hackney" class="logo-header-img"></a>
+        </div>
+        <div class="spacer-header"></div> 
+    </header>
+
+<main class="vista-detalle" style="display: block;">
+        <div class="barra-navegacion-secundaria">
+            <a href="../index.html" style="text-decoration: none;">
+                <button class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button>
+            </a>
+        </div>
+        
+        <div class="contenedor-pdp">
+            <!-- IZQUIERDA: FOTOS APILADAS -->
+            <div class="pdp-columna-imagenes">
+                <img src="../img/ropa/saco-corbata-negra-1.jpg.webp" class="img-lookbook">
+                <img src="../img/ropa/saco-corbata-negra-2.jpg.webp" class="img-lookbook">
+                <img src="../img/ropa/saco-corbata-negra-3.jpg.webp" class="img-lookbook">
+                <img src="../img/ropa/saco-corbata-negra-4.jpg.webp" class="img-lookbook">
+            </div>
+            
+            <!-- DERECHA: INFO Y ACORDEONES (Esto es lo que te persigue al bajar) -->
+            <div class="pdp-info">
+                <h2>The Mayfair Tailored Suit</h2>
+                <p class="pdp-desc">La cúspide de la sastrería. Este saco de líneas depuradas y solapa tradicional es tu mejor aliado.</p>
+                <p class="pdp-precio">$150.000</p>
+
+                <div class="opciones-pdp">
+                    <h4>Color Disponible</h4>
+                    <div class="pdp-grilla-colores">
+                        <div class="cuadrado-color color-negro seleccionado" onclick="seleccionarColor(this)"></div>
+                        <div class="cuadrado-color color-gris" onclick="seleccionarColor(this)"></div>
+                    </div>
+                </div>
+
+                <div class="opciones-pdp">
+                    <h4>Seleccionar Talle</h4>
+                    <div class="pdp-grilla-talles">
+                        <button class="cuadrado-talle" onclick="seleccionarTalle(this)">S</button>
+                        <button class="cuadrado-talle" onclick="seleccionarTalle(this)">M</button>
+                        <button class="cuadrado-talle" onclick="seleccionarTalle(this)">L</button>
+                        <button class="cuadrado-talle" onclick="seleccionarTalle(this)">XL</button>
+                        <button class="cuadrado-talle" onclick="seleccionarTalle(this)">XXL</button>
+                    </div>
+                </div>
+
+                <div class="pdp-acciones">
+                    <div class="pdp-cantidad">
+                        <button class="btn-cant-pdp" onclick="cambiarCantidad(-1)">-</button>
+                        <span id="pdp-cant" class="num-cant-pdp">1</span>
+                        <button class="btn-cant-pdp" onclick="cambiarCantidad(1)">+</button>
+                    </div>
+
+                    <button id="btn-agregar-final" class="btn-agregar-pdp" onclick="agregarAlCarrito()">
+                        Agregar al Carrito
+                    </button>
+                    
+                    <button class="btn-comprar-ahora" onclick="comprarAhora()">
+                        Comprar Ahora
+                    </button>
+                </div>
+
+                <!-- ACORDEONES -->
+                <div class="contenedor-acordeones">
+                    <div class="acordeon-item">
+                        <button class="acordeon-header" onclick="toggleAcordeon(this)">
+                            Detalles <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="acordeon-contenido"><p>Saco de corte Mayfair con solapa de muesca. Confeccionado en lana virgen de alta calidad.</p></div>
+                    </div>
+                    <div class="acordeon-item">
+                        <button class="acordeon-header" onclick="toggleAcordeon(this)">
+                            Envío <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="acordeon-contenido"><p>Envío gratuito en órdenes superiores a $150.000.</p></div>
+                    </div>
+                </div>
+            </div> <!-- Cierra pdp-info -->
+        </div> <!-- Cierra contenedor-pdp -->
+
+        <!-- SUGERENCIAS (UNA SOLA VEZ Y ANTES DEL FOOTER) -->
+        <section class="seccion-recomendados">
+            <h3>Sugerencias de nuestro sastre</h3>
+            <div class="grilla-recomendados">
+                
+                <div class="tarjeta-recom">
+                    <a href="piloto-claro.html" style="text-decoration: none; color: inherit;">
+                        <div class="recom-img-wrapper">
+                            <img src="../img/ropa/piloto-claro-1.jpg.webp">
+                            <button class="btn-quick-add">Ver Detalle</button>
+                        </div>
+                        <div class="recom-info">
+                            <h4>The Chelsea Trench</h4>
+                            <span>$160.000</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="tarjeta-recom">
+                    <a href="medio-cierre-cuadros.html" style="text-decoration: none; color: inherit;">
+                        <div class="recom-img-wrapper">
+                            <img src="../img/ropa/medio-cierre-cuadros-1.jpg.webp">
+                            <button class="btn-quick-add">Ver Detalle</button>
+                        </div>
+                        <div class="recom-info">
+                            <h4>The Oxford Quarter</h4>
+                            <span>$70.000</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="tarjeta-recom">
+                    <a href="campera-negra.html" style="text-decoration: none; color: inherit;">
+                        <div class="recom-img-wrapper">
+                            <img src="../img/ropa/campera-negra-1.jpg.webp">
+                            <button class="btn-quick-add">Ver Detalle</button>
+                        </div>
+                        <div class="recom-info">
+                            <h4>The Kensington Jacket</h4>
+                            <span>$125.000</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="tarjeta-recom">
+                    <a href="sweater-escoces.html" style="text-decoration: none; color: inherit;">
+                        <div class="recom-img-wrapper">
+                            <img src="../img/ropa/sweater-escoces-1.jpg.webp">
+                            <button class="btn-quick-add">Ver Detalle</button>
+                        </div>
+                        <div class="recom-info">
+                            <h4>The Balmoral Knit</h4>
+                            <span>$75.000</span>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Hackney</h3>
+                <p>Elegancia y tradición en indumentaria masculina.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-phone"></i> +54 9 11 0000-0000</p>
+                <p><i class="fas fa-envelope"></i> info@hackney.com</p>
+            </div>
+            <div class="footer-col">
+                <h3>Redes Sociales</h3>
+                <div class="redes-sociales">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Hackney. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        let cantidadActual = 1;
+        function cambiarCantidad(valor) {
+            cantidadActual += valor;
+            if (cantidadActual < 1) cantidadActual = 1;
+            document.getElementById('pdp-cant').innerText = cantidadActual;
+        }
+
+        function seleccionarTalle(elemento) {
+            document.querySelectorAll('.cuadrado-talle').forEach(t => t.classList.remove('seleccionado'));
+            elemento.classList.add('seleccionado');
+        }
+
+        function seleccionarColor(elemento) {
+            document.querySelectorAll('.cuadrado-color').forEach(c => c.classList.remove('seleccionado'));
+            elemento.classList.add('seleccionado');
+        }
+
+        function toggleAcordeon(elemento) {
+            const contenido = elemento.nextElementSibling;
+            const icono = elemento.querySelector('i');
+            if (contenido.style.maxHeight) {
+                contenido.style.maxHeight = null;
+                icono.classList.replace('fa-minus', 'fa-plus');
+            } else {
+                document.querySelectorAll('.acordeon-contenido').forEach(c => c.style.maxHeight = null);
+                document.querySelectorAll('.acordeon-header i').forEach(i => i.classList.replace('fa-minus', 'fa-plus'));
+                contenido.style.maxHeight = contenido.scrollHeight + "px";
+                icono.classList.replace('fa-plus', 'fa-minus');
+            }
+        }
+
+        function comprarAhora() {
+            const talle = document.querySelector('.cuadrado-talle.seleccionado');
+            if (!talle) { alert("Seleccioná un talle"); return; }
+            const mensaje = `Hola Hackney! Quiero comprar: The Mayfair Suit - Talle: ${talle.textContent} - Cantidad: ${cantidadActual}`;
+            window.open(`https://wa.me/5491100000000?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
