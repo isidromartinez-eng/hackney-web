@@ -18,12 +18,18 @@
     <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
     <!-- ESTILOS EXCLUSIVOS PARA EL EFECTO LOOKBOOK (SCROLL) -->
     <style>
-        /* --- DISEÑO GENERAL --- */
+        /* --- EL TRUCO DEL ZOOM AL 90% (SOLO PARA COMPUTADORAS) --- */
+        @media screen and (min-width: 1024px) {
+            body {
+                zoom: 0.9; /* Esto achica toda la página entera un 10% */
+            }
+        }
+        /* --- DISEÑO GENERAL (Ajustado al "Efecto 90%") --- */
         .contenedor-pdp {
-            grid-template-columns: 1.3fr 1fr !important; 
-            max-width: 1400px !important; 
-            gap: 4rem !important; 
-            padding: 0 4rem !important; 
+            grid-template-columns: 1.15fr 1fr !important; /* Fotos un poco más angostas, info con más aire */
+            max-width: 1200px !important; 
+            gap: 3rem !important; 
+            padding: 0 2rem !important; 
         }
 
         .pdp-columna-imagenes {
@@ -35,83 +41,87 @@
             margin: 0 !important;
         }
         
-        .img-lookbook { width: 100%; height: auto; object-fit: cover; border-radius: 0; }
-        .img-lookbook:nth-child(1), .img-lookbook:nth-child(2) {
-            grid-column: span 2; max-height: 85vh; width: 100%; object-position: top; 
+        .img-lookbook { 
+            width: 100%; 
+            height: auto; 
+            object-fit: cover; 
+            border-radius: 0; 
         }
         
-        .pdp-info { position: sticky; top: 130px; height: fit-content; padding-right: 1rem; }
+        .img-lookbook:nth-child(1), .img-lookbook:nth-child(2) {
+            grid-column: span 2; 
+            max-height: 75vh; 
+            width: 100%; 
+            object-position: top; 
+        }
+        
+        /* --- COLUMNA DE INFO LIMPIA (SIN SCROLLBAR) --- */
+        .pdp-info { 
+            position: sticky; 
+            top: 130px; 
+            height: fit-content; 
+            padding-right: 1rem; 
+        }
 
-        /* --- SECCIÓN DE BOTONES (ESTO ES LO QUE BUSCABAS) --- */
+ /* --- SECCIÓN DE BOTONES COMPACTA --- */
         .pdp-acciones {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 2.5rem;
+            gap: 10px; /* Redujimos el espacio */
+            margin-top: 1.5rem; /* Subimos los botones */
         }
 
-        /* --- CONTADOR DE CANTIDAD CON CUERPO --- */
-.pdp-cantidad {
-    display: flex;
-    align-items: center;
-    border: 1px solid #2C2C2C; /* Borde sólido igual a los botones */
-    width: fit-content;
-    height: 45px; /* Le damos una altura fija para que no sea chato */
-    background-color: white;
-    margin-bottom: 10px;
-}
+        /* --- CONTADOR COMPACTO --- */
+        .pdp-cantidad {
+            display: flex;
+            align-items: center;
+            border: 1px solid #2C2C2C;
+            width: fit-content;
+            height: 38px; /* Más bajito */
+            background-color: white;
+            margin-bottom: 5px; /* Menos espacio abajo */
+        }
 
-.btn-cant-pdp {
-    background: none;
-    border: none;
-    width: 45px;
-    height: 100%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #2C2C2C;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .btn-cant-pdp {
+            background: none;
+            border: none;
+            width: 38px;
+            height: 100%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #2C2C2C;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.btn-cant-pdp:hover {
-    background-color: #f5f5f5;
-}
+        .btn-cant-pdp:hover {
+            background-color: #f5f5f5;
+        }
 
-.num-cant-pdp {
-    width: 50px;
-    text-align: center;
-    font-family: 'Lato', sans-serif;
-    font-weight: bold;
-    font-size: 1rem;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
-    height: 60%; /* El separador no llega hasta arriba/abajo, queda más fino */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .num-cant-pdp {
+            width: 40px;
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+            height: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-/* --- ESTILOS DE SELECCIÓN (Para que se vea qué elegiste) --- */
-.cuadrado-talle.seleccionado {
-    background-color: #2C2C2C !important;
-    color: white !important;
-    border-color: #2C2C2C !important;
-}
-
-.cuadrado-color.seleccionado {
-    outline: 2px solid #2C2C2C;
-    outline-offset: 3px;
-}
-
+        /* --- BOTONES DE COMPRA COMPACTOS --- */
         .btn-agregar-pdp, .btn-comprar-ahora {
             width: 100%;
-            padding: 18px 0;
+            padding: 13px 0; /* Menos relleno para que sean más finos */
             font-family: 'Lato', sans-serif;
             text-transform: uppercase;
             letter-spacing: 2px;
-            font-size: 0.85rem;
+            font-size: 0.75rem; /* Letra apenas más chica */
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
@@ -131,26 +141,27 @@
             font-weight: bold;
         }
 
-       /* PEGÁ ESTO EN SU LUGAR */
-/* EFECTO DE FLOTAR PARA AMBOS BOTONES */
-.btn-agregar-pdp:hover, 
-.btn-comprar-ahora:hover {
-    /* El "salto" hacia arriba */
-    transform: translateY(-3px); 
-    
-    /* La sombra que le da profundidad */
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
+        /* EFECTO DE FLOTAR PARA AMBOS BOTONES */
+        .btn-agregar-pdp:hover, 
+        .btn-comprar-ahora:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
 
-/* Ajustes específicos de color para que no se mezclen */
-.btn-agregar-pdp:hover {
-    background-color: #000; /* Se pone un negro un pelín más intenso */
-}
+        .btn-agregar-pdp:hover {
+            background-color: #000; 
+        }
 
-.btn-comprar-ahora:hover {
-    background-color: white;
-    border-color: #000;
-}
+        .btn-comprar-ahora:hover {
+            background-color: white;
+            border-color: #000;
+        }
+
+        /* Achicamos la separación de talles y colores para ganar espacio */
+        .pdp-grilla-talles button, 
+        .pdp-grilla-colores div {
+            margin-bottom: 5px; 
+        }
 
         /* --- ACORDEONES Y RECOMENDADOS --- */
         .contenedor-acordeones { margin-top: 2rem; border-top: 1px solid #D1CEC5; }
@@ -254,6 +265,105 @@
 }
         .grilla-recomendados { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
         .tarjeta-recom img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+        /* --- AJUSTE DE TEXTOS AL 90% --- */
+        /* --- COLUMNA DE INFO CON SCROLL INVISIBLE --- */
+        .pdp-info { 
+            position: sticky; 
+            top: 130px; 
+            padding-right: 1rem; 
+            
+            /* Le ponemos un límite de altura y activamos el scroll interno */
+            max-height: calc(100vh - 150px); 
+            overflow-y: auto; 
+            
+            /* Magia negra: Ocultamos la barra fea para que se vea minimalista */
+            scrollbar-width: none; /* Para Firefox */
+        }
+        .pdp-info::-webkit-scrollbar { 
+            display: none; /* Para Chrome, Safari y Edge */
+        }
+
+        .pdp-desc {
+            font-size: 0.9rem !important; /* Descripción más fina */
+        }
+
+        .pdp-precio {
+            font-size: 1.2rem !important; /* Precio menos gigante */
+            margin-bottom: 1.5rem;
+        }
+        
+        .opciones-pdp h4 {
+            font-size: 0.85rem !important; /* Subtítulos de Talle/Color */
+        }
+        /* --- NUEVO EFECTO PARA LOS TALLES --- */
+        .cuadrado-talle {
+            transition: all 0.3s ease !important; /* Movimiento suave */
+        }
+
+        .cuadrado-talle:hover {
+            background-color: white !important; /* Forzamos a que no se pinte de negro */
+            color: #2C2C2C !important;
+            transform: translateY(-3px); /* El saltito */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12); /* La sombra elegante */
+        }
+
+        /* Si el talle YA está seleccionado, lo mantenemos negro firme aunque le pasen el mouse */
+        .cuadrado-talle.seleccionado:hover {
+            background-color: #2C2C2C !important;
+            color: white !important;
+            transform: none; /* No hace falta que salte si ya lo eligió */
+            box-shadow: none;
+        }
+        /* --- MIGAS DE PAN (BREADCRUMBS) --- */
+        .migas-de-pan {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .migas-de-pan a { color: #888; text-decoration: none; transition: color 0.3s; }
+        .migas-de-pan a:hover { color: #2C2C2C; }
+        .migas-de-pan .separador { margin: 0 8px; color: #ccc; }
+        .migas-de-pan .actual { color: #2C2C2C; font-weight: bold; }
+
+        /* --- TELA Y COMPOSICIÓN --- */
+        .pdp-composicion {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: -1rem; /* Lo acerca al precio */
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- GUÍA DE TALLES HEADER --- */
+        .encabezado-talles {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .link-guia-talles {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.75rem;
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        .link-guia-talles:hover { color: #2C2C2C; }
+
+        /* Alineamos el ícono de WhatsApp con el texto */
+        .btn-comprar-ahora {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body style="padding-top: 100px;">
@@ -268,10 +378,10 @@
     </header>
 
 <main class="vista-detalle" style="display: block;">
-        <div class="barra-navegacion-secundaria">
-            <a href="../index.html" style="text-decoration: none;">
-                <button class="btn-volver-texto"><i class="fas fa-arrow-left"></i> Volver</button>
-            </a>
+        <div class="migas-de-pan">
+            <a href="../index.html">Inicio</a> <span class="separador">/</span>
+            <a href="../index.html">Sastrería</a> <span class="separador">/</span>
+            <span class="actual">The Mayfair Suit</span>
         </div>
         
         <div class="contenedor-pdp">
@@ -288,6 +398,7 @@
                 <h2>The Mayfair Tailored Suit</h2>
                 <p class="pdp-desc">La cúspide de la sastrería. Este saco de líneas depuradas y solapa tradicional es tu mejor aliado.</p>
                 <p class="pdp-precio">$150.000</p>
+                <p class="pdp-composicion">100% Lana Super 120s | Forro de Cupro</p>
 
                 <div class="opciones-pdp">
                     <h4>Color Disponible</h4>
@@ -298,7 +409,10 @@
                 </div>
 
                 <div class="opciones-pdp">
-                    <h4>Seleccionar Talle</h4>
+                    <div class="encabezado-talles">
+                        <h4>Seleccionar Talle</h4>
+                        <span class="link-guia-talles" onclick="abrirModalTalles()">Guía de Medidas</span>
+                    </div>
                     <div class="pdp-grilla-talles">
                         <button class="cuadrado-talle" onclick="seleccionarTalle(this)">S</button>
                         <button class="cuadrado-talle" onclick="seleccionarTalle(this)">M</button>
@@ -319,13 +433,28 @@
                         Agregar al Carrito
                     </button>
                     
-                    <button class="btn-comprar-ahora" onclick="comprarAhora()">
-                        Comprar Ahora
+                   <button class="btn-comprar-ahora" onclick="comprarAhora()">
+                        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Comprar por WhatsApp
                     </button>
                 </div>
 
                 <!-- ACORDEONES -->
                 <div class="contenedor-acordeones">
+                    <!-- Acordeón Nuevo: Guía de Talles -->
+                    <div class="acordeon-item" id="acordeon-talles">
+                        <button class="acordeon-header" onclick="toggleAcordeon(this)">
+                            Guía de Medidas <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="acordeon-contenido">
+                            <p style="line-height: 1.8;">
+                                <strong>S (Talle 46):</strong> Pecho 96cm | Cintura 82cm<br>
+                                <strong>M (Talle 48):</strong> Pecho 100cm | Cintura 86cm<br>
+                                <strong>L (Talle 50):</strong> Pecho 104cm | Cintura 90cm<br>
+                                <strong>XL (Talle 52):</strong> Pecho 108cm | Cintura 94cm
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="acordeon-item">
                         <button class="acordeon-header" onclick="toggleAcordeon(this)">
                             Detalles <i class="fas fa-plus"></i>
@@ -402,24 +531,70 @@
             </div>
         </section>
     </main>
+<!-- MODAL DE GUÍA DE TALLES (POP-UP) -->
+    <style>
+        .modal-oculto {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); z-index: 9999;
+            justify-content: center; align-items: center; backdrop-filter: blur(3px);
+        }
+        .modal-contenido {
+            background-color: white; padding: 3rem; width: 90%; max-width: 500px;
+            position: relative; font-family: 'Lato', sans-serif; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: aparecerModal 0.3s ease-out;
+        }
+        @keyframes aparecerModal { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .cerrar-modal {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            font-size: 1.5rem; cursor: pointer; color: #2c2c2c; transition: transform 0.2s;
+        }
+        .cerrar-modal:hover { transform: scale(1.1); }
+        .modal-contenido h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 10px; }
+        .tabla-talles { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .tabla-talles th { background-color: #f9f9f9; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .tabla-talles th, .tabla-talles td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+    </style>
 
-    <footer>
+    <div id="modal-talles" class="modal-oculto">
+        <div class="modal-contenido">
+            <button class="cerrar-modal" onclick="cerrarModalTalles()"><i class="fas fa-times"></i></button>
+            <h3>Guía de Medidas</h3>
+            <p style="color: #666; font-size: 0.9rem;">The Mayfair Tailored Suit</p>
+            <table class="tabla-talles">
+                <tr><th>Talle</th><th>Pecho</th><th>Cintura</th></tr>
+                <tr><td><strong>S (46)</strong></td><td>96 cm</td><td>82 cm</td></tr>
+                <tr><td><strong>M (48)</strong></td><td>100 cm</td><td>86 cm</td></tr>
+                <tr><td><strong>L (50)</strong></td><td>104 cm</td><td>90 cm</td></tr>
+                <tr><td><strong>XL (52)</strong></td><td>108 cm</td><td>94 cm</td></tr>
+            </table>
+        </div>
+    </div>
+    <!-- FIN DEL MODAL -->
+<footer>
         <div class="footer-container">
             <div class="footer-col">
                 <h3>Hackney</h3>
-                <p>Elegancia y tradición en indumentaria masculina.</p>
+                <p>Elegancia y tradición en indumentaria masculina. Calidad sartorial para el hombre moderno que valora el buen vestir.</p>
             </div>
             <div class="footer-col">
                 <h3>Contacto</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Tu Dirección, Ciudad</p>
                 <p><i class="fas fa-phone"></i> +54 9 11 0000-0000</p>
                 <p><i class="fas fa-envelope"></i> info@hackney.com</p>
             </div>
             <div class="footer-col">
                 <h3>Redes Sociales</h3>
+                <p>Seguinos para enterarte de las nuevas temporadas.</p>
                 <div class="redes-sociales">
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
                 </div>
+            </div>
+            <div class="footer-col">
+                <h3>Horarios</h3>
+                <p><i class="far fa-clock"></i> Lunes a Viernes:<br>10:00 - 20:00 hs</p>
+                <p><i class="far fa-clock"></i> Sábados:<br>10:00 - 14:00 hs</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -436,8 +611,12 @@
         }
 
         function seleccionarTalle(elemento) {
-            document.querySelectorAll('.cuadrado-talle').forEach(t => t.classList.remove('seleccionado'));
-            elemento.classList.add('seleccionado');
+            if (elemento.classList.contains('seleccionado')) {
+                elemento.classList.remove('seleccionado');
+            } else {
+                document.querySelectorAll('.cuadrado-talle').forEach(t => t.classList.remove('seleccionado'));
+                elemento.classList.add('seleccionado');
+            }
         }
 
         function seleccionarColor(elemento) {
@@ -445,17 +624,30 @@
             elemento.classList.add('seleccionado');
         }
 
-        function toggleAcordeon(elemento) {
+      function toggleAcordeon(elemento) {
             const contenido = elemento.nextElementSibling;
             const icono = elemento.querySelector('i');
+            
+            // Si tocaste uno que ya estaba abierto, lo cerramos
             if (contenido.style.maxHeight) {
                 contenido.style.maxHeight = null;
                 icono.classList.replace('fa-minus', 'fa-plus');
             } else {
+                // Si estaba cerrado, primero cerramos TODOS los demás
                 document.querySelectorAll('.acordeon-contenido').forEach(c => c.style.maxHeight = null);
                 document.querySelectorAll('.acordeon-header i').forEach(i => i.classList.replace('fa-minus', 'fa-plus'));
+                
+                // Abrimos el que el cliente tocó
                 contenido.style.maxHeight = contenido.scrollHeight + "px";
                 icono.classList.replace('fa-plus', 'fa-minus');
+
+                // Magia: Apuntamos al contenedor padre (botón + texto) y lo llevamos al CENTRO
+                setTimeout(() => {
+                    elemento.parentElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' // Acá está el secreto para que quede en el medio
+                    });
+                }, 320); // Le damos 320ms para que la animación de abrir termine antes de viajar
             }
         }
 
@@ -464,6 +656,23 @@
             if (!talle) { alert("Seleccioná un talle"); return; }
             const mensaje = `Hola Hackney! Quiero comprar: The Mayfair Suit - Talle: ${talle.textContent} - Cantidad: ${cantidadActual}`;
             window.open(`https://wa.me/5491100000000?text=${encodeURIComponent(mensaje)}`, '_blank');
+        }
+        
+        // --- FUNCIONES DEL MODAL DE TALLES ---
+        function abrirModalTalles() {
+            document.getElementById('modal-talles').style.display = 'flex';
+        }
+
+        function cerrarModalTalles() {
+            document.getElementById('modal-talles').style.display = 'none';
+        }
+
+        // Si el cliente hace clic afuera del recuadro blanco, también se cierra
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-talles');
+            if (event.target === modal) {
+                cerrarModalTalles();
+            }
         }
     </script>
 </body>
