@@ -11,6 +11,84 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .hero-video-wrapper {
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            border-radius: inherit;
+        }
+        .video-elemento {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); 
+            z-index: 2;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+        }
+        .hero-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5rem;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            margin: 0;
+            font-weight: 400;
+        }
+        .hero-tagline {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+        .hero-btn {
+            margin-top: 40px;
+            padding: 14px 35px;
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .hero-btn:hover {
+            background: #fff;
+            color: #2C2C2C;
+        }
+        
+        .hero-banner.chico .hero-content,
+        .hero-banner.chico-sin-header .hero-content {
+            display: none;
+        }
+
+        /* Corregimos que el banner no bloquee el click del botón */
+        #heroBanner { cursor: default !important; }
+    </style>
 </head>
 <body>
 
@@ -116,9 +194,19 @@
         </ul>
     </nav>
 
-    <div id="heroBanner" class="hero-banner gigante" onclick="cambiarVista('vista-principal')">
-        <div class="hero-logo-wrapper" id="logoGiganteFoco">
-            <img src="img/logos/logo.jpg.webp" alt="Hackney London Logo" class="hero-logo-img">
+    <div id="heroBanner" class="hero-banner gigante">
+        <div class="hero-video-wrapper">
+            <video autoplay loop muted playsinline class="video-elemento">
+                <source src="video/estructura.mp4.mp4" type="video/mp4">
+            </video>
+            
+            <div class="hero-overlay"></div>
+
+            <div class="hero-content">
+                <h1 class="hero-logo">Hackney</h1>
+                <p class="hero-tagline">Tradición Británica & Sastrería de Autor</p>
+                <button class="hero-btn" onclick="bajarAColeccion(event)">Explorar Colección</button>
+            </div>
         </div>
     </div>
 
@@ -144,7 +232,8 @@
                 <div class="detalles-producto"><h3>The Chelsea Trench Coat</h3><p class="precio">$160.000</p></div>
             </article>
 
-<article class="producto" onclick="window.location.href='productos/saco-corbata-negra.html'" style="cursor: pointer;">                <div class="img-container"><img src="img/ropa/saco-corbata-negra-1.jpg.webp" alt="Saco" loading="lazy"></div>
+            <article class="producto" onclick="window.location.href='productos/saco-corbata-negra.html'" style="cursor: pointer;">
+                <div class="img-container"><img src="img/ropa/saco-corbata-negra-1.jpg.webp" alt="Saco" loading="lazy"></div>
                 <div class="detalles-producto"><h3>The Mayfair Tailored Suit</h3><p class="precio">$150.000</p></div>
             </article>
 
@@ -609,6 +698,24 @@
             inyectarFlechasGrilla();
         }
 
+        // --- FUNCIÓN PARA BAJAR A LA COLECCIÓN ---
+       function bajarAColeccion(event) {
+            if (event) event.stopPropagation();
+            
+            const seccion = document.getElementById('vista-principal');
+            
+            if (seccion) {
+                // Al usar offsetTop, el navegador viaja justo donde empieza 
+                // el padding que pusimos en el CSS.
+                const posicionY = seccion.offsetTop;
+
+                window.scrollTo({
+                    top: posicionY,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
         // --- NAVEGACIÓN Y MENÚ ---
         function toggleMenu() { 
             menuLateral.classList.toggle('abierto'); 
@@ -633,9 +740,8 @@
             const heroBanner = document.getElementById('heroBanner');
             const buscadorFlotante = document.getElementById('buscadorFlotante');
             
-            if (heroBanner.style.display !== 'none') {
+            if (heroBanner && heroBanner.style.display !== 'none') {
                 const rect = heroBanner.getBoundingClientRect();
-                // Aparece el header cuando pasas de la mitad del banner
                 if (rect.bottom < (window.innerHeight * 0.5)) {
                     headerTop.classList.add('visible');
                     if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
@@ -662,27 +768,27 @@
             const heroBanner = document.getElementById('heroBanner');
             const buscadorFlotante = document.getElementById('buscadorFlotante');
 
-            heroBanner.style.display = 'flex';
+            if (heroBanner) heroBanner.style.display = 'flex';
             document.body.style.paddingTop = '0';
             headerTop.classList.remove('visible'); 
             if(buscadorFlotante) buscadorFlotante.classList.remove('oculto-por-scroll');
 
             if (idVistaSolicitada === 'vista-principal') {
-                heroBanner.className = 'hero-banner gigante';
+                if (heroBanner) heroBanner.className = 'hero-banner gigante';
                 document.body.style.backgroundColor = 'var(--blanco)';
             } else if (idVistaSolicitada === 'vista-carrito') {
                 headerTop.style.display = 'none'; 
-                heroBanner.className = 'hero-banner chico-sin-header';
+                if (heroBanner) heroBanner.className = 'hero-banner chico-sin-header';
                 document.body.style.backgroundColor = 'var(--fondo-hueso)';
                 if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
             } else if (idVistaSolicitada === 'vista-producto') {
-                heroBanner.style.display = 'none'; 
+                if (heroBanner) heroBanner.style.display = 'none'; 
                 document.body.style.paddingTop = '100px'; 
                 headerTop.classList.add('visible'); 
                 document.body.style.backgroundColor = 'var(--blanco)';
                 if(buscadorFlotante) buscadorFlotante.classList.add('oculto-por-scroll');
             } else {
-                heroBanner.className = 'hero-banner chico';
+                if (heroBanner) heroBanner.className = 'hero-banner chico';
                 document.body.style.backgroundColor = 'var(--fondo-hueso)';
                 if(idVistaSolicitada === 'vista-ver-todo' && document.querySelectorAll('#modalFiltros .activo').length === 0) {
                     limpiarFiltros(false);
