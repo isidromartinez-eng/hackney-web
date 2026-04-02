@@ -110,7 +110,18 @@ body.menu-abierto .top-controles { opacity: 0; visibility: hidden; pointer-event
    ESTILOS COMPARTIDOS DE GRILLAS
    ========================================= */
 .producto, .tarjeta-producto { cursor: pointer; } 
-.vista-principal { padding: 4rem 0 0; max-width: 100%; display: block; }
+/* =========================================
+   VISTA PRINCIPAL (GRILLA DE PRODUCTOS)
+   ========================================= */
+/* =========================================
+   VISTA PRINCIPAL (GRILLA DE PRODUCTOS)
+   ========================================= */
+.vista-principal {
+    display: block; /* Asegura que se comporte como un bloque */
+    padding-top: 200px; /* Incrementamos el margen a 200px para empujar las imágenes más abajo */
+    background-color: var(--blanco);
+    width: 100%;
+}
 .contenedor-productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
 .producto { background-color: var(--blanco); text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; border: 1px solid transparent; }
 .img-container { width: 100%; overflow: hidden; aspect-ratio: 3 / 4; position: relative; }
